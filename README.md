@@ -1,8 +1,8 @@
 # March Madness 2026 Bracket Portfolio Engine
 
-This repo exists to answer one practical question: if you only get a handful of NCAA tournament entries, what set of brackets gives you the best shot at finishing first?
+The main reason I built this repo was because I do not follow basketball - but I enjoy competing at big sporting events like this. So the question was "how can I use data to choose my bracket?". Using a hybrid of codex (GPT 5.4) and claude (Opus 4.6) back and forth testing, adding weights, and implementing the foundational thinking in https://github.com/karpathy/autoresearch - this was the outcome. 
 
-The answer in this project is not “pick the five safest brackets.” It is a release-tested portfolio built from a trained matchup model, a public-field model, and a guarded search process that refuses to ship variants just because they are newer.
+It is a release-tested portfolio built from a trained matchup model, a public-field model, and a guarded search process that refuses to ship variants just because they are newer.
 
 The current baseline is **V10.6**. Under the final release contract, that baseline beat the naive portfolio on the numbers that mattered:
 - first-place equity: `0.4580` vs `0.3194`
