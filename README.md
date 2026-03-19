@@ -52,13 +52,33 @@ That means the project is closer to a decision system than a plain forecasting m
 
 There is no single master weight knob. The project uses several smaller weight systems at different layers:
 
-| Weight layer | What it controls | Current release_v10_6 values | Where it lives |
-| --- | --- | --- |
-| Round scoring weights | How many points each round is worth, plus optional upset bonuses | Standard release scoring is `1-2-4-8-16-32` with `0.0` upset bonus | `configs/portfolio/scoring_profiles.yaml` |
-| Contest weights | How much the baseline cares about small, mid, and large pool assumptions | `standard_small=0.333333`, `standard_mid=0.333333`, `standard_large=0.333334` | `march_madness_2026/v10/search.py` and `configs/portfolio/simulation_profile.yaml` |
-| Payout weights | How top-heavy the pool is: winner-take-all, top-3, top-5, and tie splitting | Small: `1st=100%`; Mid: `1st=55%`, `2nd=30%`, `3rd=15%`; Large: `1st=60%`, `2nd=25%`, `3rd=15%` | `configs/portfolio/payout_profiles.yaml` |
-| Opponent archetype mix | How the field is split across high-confidence, balanced, contrarian, and upside-seeking bracket behavior | Release simulation prior is `0.20` each across all five archetypes before contest-specific field behavior adjustments | `configs/portfolio/contest_profiles.yaml` and `march_madness_2026/v10/search.py` |
-| Release guardrails | What counts as shippable after search | `3` release seeds, blended-weight floor `0.10`, practical zero-FPE floor `1e-6`, no naive regression allowed, no zero-FPE finalist allowed | `march_madness_2026/v10/portfolio.py` and `march_madness_2026/cli.py` |
+- **Round scoring weights**  
+  Controls how many points each round is worth and whether upsets get bonuses.  
+  Current release value: standard scoring is `1-2-4-8-16-32` with `0.0` upset bonus.  
+  Source: `configs/portfolio/scoring_profiles.yaml`
+
+- **Contest weights**  
+  Controls how much the baseline cares about small, mid, and large pool assumptions.  
+  Current release values: `standard_small=0.333333`, `standard_mid=0.333333`, `standard_large=0.333334`.  
+  Source: `march_madness_2026/v10/search.py` and `configs/portfolio/simulation_profile.yaml`
+
+- **Payout weights**  
+  Controls how top-heavy the contest is.  
+  Current release values:
+  - small: `1st=100%`
+  - mid: `1st=55%`, `2nd=30%`, `3rd=15%`
+  - large: `1st=60%`, `2nd=25%`, `3rd=15%`
+  Source: `configs/portfolio/payout_profiles.yaml`
+
+- **Opponent archetype mix**  
+  Controls how the simulated field is split across bracket styles.  
+  Current release prior: `0.20` each for `high_confidence`, `balanced`, `selective_contrarian`, `underdog_upside`, and `high_risk_high_return` before contest-specific adjustments.  
+  Source: `configs/portfolio/contest_profiles.yaml` and `march_madness_2026/v10/search.py`
+
+- **Release guardrails**  
+  Controls what is allowed to ship after search.  
+  Current release values: `3` release seeds, blended-weight floor `0.10`, practical zero-FPE floor `1e-6`, no naive regression allowed, no zero-FPE finalist allowed.  
+  Source: `march_madness_2026/v10/portfolio.py` and `march_madness_2026/cli.py`
 
 The important point is that these layers are deliberate. The project is not arbitrarily piling on weights; it is separating distinct decisions that would otherwise get hidden inside one opaque score.
 
@@ -93,11 +113,15 @@ The public baseline is also specific about search/runtime settings:
 
 The contest profiles themselves also change by pool size:
 
-| Contest profile | Simulated field size | Opponent mix |
-| --- | --- | --- |
-| `standard_small` | `24` | `high_confidence=0.40`, `balanced=0.35`, `selective_contrarian=0.15`, `underdog_upside=0.07`, `high_risk_high_return=0.03` |
-| `standard_mid` | `96` | `high_confidence=0.26`, `balanced=0.32`, `selective_contrarian=0.20`, `underdog_upside=0.14`, `high_risk_high_return=0.08` |
-| `standard_large` | `768` | `high_confidence=0.15`, `balanced=0.25`, `selective_contrarian=0.24`, `underdog_upside=0.20`, `high_risk_high_return=0.16` |
+- `standard_small`
+  - simulated field size: `24`
+  - opponent mix: `high_confidence=0.40`, `balanced=0.35`, `selective_contrarian=0.15`, `underdog_upside=0.07`, `high_risk_high_return=0.03`
+- `standard_mid`
+  - simulated field size: `96`
+  - opponent mix: `high_confidence=0.26`, `balanced=0.32`, `selective_contrarian=0.20`, `underdog_upside=0.14`, `high_risk_high_return=0.08`
+- `standard_large`
+  - simulated field size: `768`
+  - opponent mix: `high_confidence=0.15`, `balanced=0.25`, `selective_contrarian=0.24`, `underdog_upside=0.20`, `high_risk_high_return=0.16`
 
 These details are why the repo is more complex than a simple bracket picker, but also why the resulting baseline is more defensible.
 
