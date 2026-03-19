@@ -1,6 +1,6 @@
 # March Madness 2026 Bracket Portfolio Engine
 
-The main reason I built this repo was because I do not follow basketball - but I enjoy competing at big sporting events like this. So the question was "how can I use data to choose my bracket?". Using a hybrid of codex (GPT 5.4) and claude (Opus 4.6) back and forth testing, adding weights, and implementing the foundational thinking in https://github.com/karpathy/autoresearch - this was the outcome. 
+The main reason I built this repo was because I do not follow basketball - but I enjoy competing at big sporting events like this. So the question was "how can I use data to choose my bracket?". Using a hybrid of codex (GPT 5.4) and claude (Opus 4.6) back and forth testing, adding weights, and implementing the foundational thinking in https://github.com/karpathy/autoresearch - this was the outcome.
 
 It is a release-tested portfolio built from a trained matchup model, a public-field model, and a guarded search process that refuses to ship variants just because they are newer.
 
@@ -10,6 +10,42 @@ The current baseline is **V10.6**. Under the final release contract, that baseli
 - expected payout: `239.09` vs `186.61`
 
 If you want the exact winning release state, start with [docs/current-release-state.md](docs/current-release-state.md). If you want the final submitted brackets, go straight to [docs/submission-brackets/README.md](docs/submission-brackets/README.md).
+
+## What This Repo Optimizes
+
+This is not a simple “which team will win the tournament?” model.
+
+That question is too small for a bracket contest. A real pool depends on round scoring, payout shape, field size, how duplicated the obvious picks are, and how a small set of your own entries interact with each other. The project is trying to answer a harder question:
+
+> If you only get a handful of NCAA tournament entries, what set of brackets gives you the best chance to finish first in a specific kind of pool?
+
+That is why the system optimizes a **portfolio of brackets** instead of just predicting a champion.
+
+## Why The Project Is Complex
+
+The stack has several moving parts because bracket contests are top-heavy and duplication-sensitive:
+- a matchup model estimates game-level win probabilities
+- a public-field model estimates how opponents are likely to pick and where duplication pressure is high
+- tournament simulation turns those probabilities into full-bracket paths
+- the portfolio layer scores sets of brackets against simulated opponents and payout structures
+- release guardrails reject variants that look interesting in search but fail honest rebuild checks
+
+That means the project is closer to a decision system than a plain forecasting model.
+
+## How The Weighting Works
+
+There is no single master weight knob. The project uses several smaller weight systems at different layers:
+
+| Weight layer | What it controls | Where it lives |
+| --- | --- | --- |
+| Round scoring weights | How many points each round is worth, plus optional upset bonuses | `configs/portfolio/scoring_profiles.yaml` |
+| Contest weights | How much the baseline cares about small, mid, and large pool assumptions | `march_madness_2026/v10/search.py` |
+| Payout weights | How top-heavy the pool is: winner-take-all, top-3, top-5, and tie splitting | `configs/portfolio/payout_profiles.yaml` |
+| Opponent archetype mix | How the field is split across high-confidence, balanced, contrarian, and upside-seeking bracket behavior | `configs/portfolio/contest_profiles.yaml` and `march_madness_2026/v10/search.py` |
+| Model/training profile weights | Which seasons, feature families, calibration method, and uncertainty mode define a release profile | `configs/model/training_profile.yaml` |
+| Release objective and guardrails | What counts as shippable after search: first-place equity, capture, payout, diversification, and naive-baseline checks | `march_madness_2026/v10/portfolio.py` |
+
+The important point is that these layers are deliberate. The project is not arbitrarily piling on weights; it is separating distinct decisions that would otherwise get hidden inside one opaque score.
 
 ## What This Repo Is
 
@@ -59,11 +95,11 @@ If you are seeing this repo for the first time, read these in order:
 The core package lives in `march_madness_2026/`. That includes the older engine path and the modern V10+ path under `march_madness_2026/v10/`.
 
 The project configuration lives under `configs/`. The main profiles are:
-- `configs/model/training_profile.yaml`
-- `configs/portfolio/contest_profiles.yaml`
-- `configs/portfolio/payout_profiles.yaml`
-- `configs/portfolio/scoring_profiles.yaml`
-- `configs/portfolio/simulation_profile.yaml`
+- `configs/model/training_profile.yaml`: training seasons, feature sets, calibration, and uncertainty settings
+- `configs/portfolio/contest_profiles.yaml`: contest-size assumptions and opponent archetype mixes
+- `configs/portfolio/payout_profiles.yaml`: prize curves and top-heaviness
+- `configs/portfolio/scoring_profiles.yaml`: round-point systems and upset bonuses
+- `configs/portfolio/simulation_profile.yaml`: release-time simulation and portfolio-search settings
 
 Small reference data that is worth committing lives under `data/reference/`, and the committed Selection Sunday inference snapshot lives at `data/features/selection_sunday/snapshot.json`.
 
