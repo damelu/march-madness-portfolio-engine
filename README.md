@@ -1,8 +1,8 @@
 # March Madness 2026 Bracket Portfolio Engine
 
-The main reason I built this repo was because I do not follow basketball - but I enjoy competing at big sporting events like this. So the question was "how can I use data to choose my bracket?". Using a hybrid of codex (GPT 5.4) and claude (Opus 4.6) back and forth testing, adding weights, and implementing the foundational thinking in https://github.com/karpathy/autoresearch - this was the outcome.
+I built this repo to answer one practical question: if you are not a basketball expert but you still want to compete seriously in March Madness pools, what is the best data-driven way to choose your brackets?
 
-It is a release-tested portfolio built from a trained matchup model, a public-field model, and a guarded search process that refuses to ship variants just because they are newer.
+The result is a release-tested bracket portfolio engine built from a trained matchup model, a public-field model, and a guarded search process that refuses to ship variants just because they are newer.
 
 The current baseline is **V10.6**. Under the final release contract, that baseline beat the naive portfolio on the numbers that mattered:
 - first-place equity: `0.4580` vs `0.3194`
@@ -10,6 +10,22 @@ The current baseline is **V10.6**. Under the final release contract, that baseli
 - expected payout: `239.09` vs `186.61`
 
 If you want the exact winning release state, start with [docs/current-release-state.md](docs/current-release-state.md). If you want the final submitted brackets, go straight to [docs/submission-brackets/README.md](docs/submission-brackets/README.md).
+
+## Start Here
+
+If you are seeing this repo for the first time, use this path:
+
+1. [docs/current-release-state.md](docs/current-release-state.md)  
+   The fastest summary of what won, what shipped, and what remained incomplete.
+
+2. [docs/submission-baseline.md](docs/submission-baseline.md)  
+   The final V10.6 decision and the best three-bracket subset.
+
+3. [docs/submission-brackets/README.md](docs/submission-brackets/README.md)  
+   The public copy of the five final submitted brackets.
+
+4. [docs/model-architecture-and-evolution.md](docs/model-architecture-and-evolution.md)  
+   The full explanation of the hybrid design, data choices, and version history.
 
 ## What This Repo Optimizes
 
@@ -21,7 +37,7 @@ That question is too small for a bracket contest. A real pool depends on round s
 
 That is why the system optimizes a **portfolio of brackets** instead of just predicting a champion.
 
-## Why The Project Is Complex
+## What The System Actually Does
 
 The stack has several moving parts because bracket contests are top-heavy and duplication-sensitive:
 - a matchup model estimates game-level win probabilities
@@ -36,16 +52,54 @@ That means the project is closer to a decision system than a plain forecasting m
 
 There is no single master weight knob. The project uses several smaller weight systems at different layers:
 
-| Weight layer | What it controls | Where it lives |
+| Weight layer | What it controls | Current release_v10_6 values | Where it lives |
 | --- | --- | --- |
-| Round scoring weights | How many points each round is worth, plus optional upset bonuses | `configs/portfolio/scoring_profiles.yaml` |
-| Contest weights | How much the baseline cares about small, mid, and large pool assumptions | `march_madness_2026/v10/search.py` |
-| Payout weights | How top-heavy the pool is: winner-take-all, top-3, top-5, and tie splitting | `configs/portfolio/payout_profiles.yaml` |
-| Opponent archetype mix | How the field is split across high-confidence, balanced, contrarian, and upside-seeking bracket behavior | `configs/portfolio/contest_profiles.yaml` and `march_madness_2026/v10/search.py` |
-| Model/training profile weights | Which seasons, feature families, calibration method, and uncertainty mode define a release profile | `configs/model/training_profile.yaml` |
-| Release objective and guardrails | What counts as shippable after search: first-place equity, capture, payout, diversification, and naive-baseline checks | `march_madness_2026/v10/portfolio.py` |
+| Round scoring weights | How many points each round is worth, plus optional upset bonuses | Standard release scoring is `1-2-4-8-16-32` with `0.0` upset bonus | `configs/portfolio/scoring_profiles.yaml` |
+| Contest weights | How much the baseline cares about small, mid, and large pool assumptions | `standard_small=0.333333`, `standard_mid=0.333333`, `standard_large=0.333334` | `march_madness_2026/v10/search.py` and `configs/portfolio/simulation_profile.yaml` |
+| Payout weights | How top-heavy the pool is: winner-take-all, top-3, top-5, and tie splitting | Small: `1st=100%`; Mid: `1st=55%`, `2nd=30%`, `3rd=15%`; Large: `1st=60%`, `2nd=25%`, `3rd=15%` | `configs/portfolio/payout_profiles.yaml` |
+| Opponent archetype mix | How the field is split across high-confidence, balanced, contrarian, and upside-seeking bracket behavior | Release simulation prior is `0.20` each across all five archetypes before contest-specific field behavior adjustments | `configs/portfolio/contest_profiles.yaml` and `march_madness_2026/v10/search.py` |
+| Release guardrails | What counts as shippable after search | `3` release seeds, blended-weight floor `0.10`, practical zero-FPE floor `1e-6`, no naive regression allowed, no zero-FPE finalist allowed | `march_madness_2026/v10/portfolio.py` and `march_madness_2026/cli.py` |
 
 The important point is that these layers are deliberate. The project is not arbitrarily piling on weights; it is separating distinct decisions that would otherwise get hidden inside one opaque score.
+
+The release objective itself is also weighted. The current `v10_6_release_objective`:
+
+- heavily rewards first-place equity: `+40.0`
+- rewards survivability and payout quality: `+8.0 * cash_rate`, `+6.0 * top3_equity`, `+0.05 * expected_payout`
+- rewards portfolio variety: `+2.0 * unique_champions`, `+1.0 * distinct_archetypes`
+- penalizes overlap and duplication: overlap starts at `12.0`, duplication at `10.0`, Final Four repeat at `8.0`, region-winner repeat at `6.0`, champion repeat at `4.0`
+- scales those diversification penalties upward as contests get larger
+
+Where `large_field_pressure` is derived from the contest blend:
+- each `large` contest weight contributes `1.0`
+- each `mid` contest weight contributes `0.5`
+- `small` contributes `0.0`
+- the result is clipped to `[0.0, 1.0]`
+
+So the project is not using one giant arbitrary score. It uses a layered contest model, then a release objective that explicitly trades off upside, survivability, and diversification.
+
+## Current Release_v10_6 Runtime Settings
+
+The public baseline is also specific about search/runtime settings:
+
+- tournament simulations: `3000`
+- candidate brackets generated: `240`
+- portfolio size: `5`
+- max per archetype: `2`
+- minimum distinct archetypes: `3`
+- overlap penalty weight: `0.18`
+- champion penalty weight: `0.05`
+- sensitivity contests: `flat_mid`, `upset_bonus_large`
+
+The contest profiles themselves also change by pool size:
+
+| Contest profile | Simulated field size | Opponent mix |
+| --- | --- | --- |
+| `standard_small` | `24` | `high_confidence=0.40`, `balanced=0.35`, `selective_contrarian=0.15`, `underdog_upside=0.07`, `high_risk_high_return=0.03` |
+| `standard_mid` | `96` | `high_confidence=0.26`, `balanced=0.32`, `selective_contrarian=0.20`, `underdog_upside=0.14`, `high_risk_high_return=0.08` |
+| `standard_large` | `768` | `high_confidence=0.15`, `balanced=0.25`, `selective_contrarian=0.24`, `underdog_upside=0.20`, `high_risk_high_return=0.16` |
+
+These details are why the repo is more complex than a simple bracket picker, but also why the resulting baseline is more defensible.
 
 ## What This Repo Is
 
@@ -58,37 +112,6 @@ It includes:
 - optimizer, backtest, and release tooling for iterating on the stack
 
 It is not a hosted product or a one-command “perfect bracket” app. It is a research codebase with a stable public baseline.
-
-## Why The Project Looks The Way It Does
-
-March Madness is a bad fit for a clean end-to-end dataset. The annual sample is small. The public field matters as much as raw game win probability. Historical public bracket data is incomplete. That pushed the project toward a hybrid design instead of a pure end-to-end learned system.
-
-The short version is:
-- game probabilities are learned
-- part of the public-field layer is empirical, part is proxy-backed
-- final portfolio selection is search-driven
-- release guardrails decide what is allowed to ship
-
-That design choice is explained in full in [docs/model-architecture-and-evolution.md](docs/model-architecture-and-evolution.md).
-
-## Start Here
-
-If you are seeing this repo for the first time, read these in order:
-
-1. [docs/current-release-state.md](docs/current-release-state.md)  
-   This tells you what the current baseline is, what it beat, and what is still incomplete.
-
-2. [docs/model-architecture-and-evolution.md](docs/model-architecture-and-evolution.md)  
-   This explains why the stack is hybrid, how the V10.x line evolved, and which datasets actually matter.
-
-3. [docs/submission-baseline.md](docs/submission-baseline.md)  
-   This records the final V10.6 decision and the best three-bracket subset.
-
-4. [docs/submission-brackets/README.md](docs/submission-brackets/README.md)  
-   This is the public copy of the five final submission brackets.
-
-5. [docs/publishing-guide.md](docs/publishing-guide.md)  
-   Read this only if you are maintaining or publishing the repo. It is a maintainer document, not the main project explainer.
 
 ## What Is In The Repo
 
@@ -175,14 +198,6 @@ uv run python scripts/backtest_v10.py \
 This project is built around explicit profiles, explicit artifact paths, and explicit rebuild rules. The important operational rule is simple: optimizer checkpoints are not trusted as final winners until they are rebuilt and compared under the exact same release contract.
 
 That rule ended up mattering a lot. More than once, a variant looked better in a raw search or mixed backtest and then lost when rebuilt honestly.
-
-## Publishing This Repo
-
-If you are moving this project into its own GitHub repo, read [docs/publishing-guide.md](docs/publishing-guide.md) before you push. The short version is:
-- publish this folder, not the whole workspace
-- keep local-heavy data and outputs ignored
-- use the curated docs bundle, not the raw local output tree
-- keep the public framing honest
 
 ## License
 
