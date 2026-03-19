@@ -1,0 +1,76 @@
+profiles:
+  standard_small:
+    name: Standard small pool
+    scoring_profile: standard_124832
+    payout_profile: winner_take_all_small
+    pool_bucket: small
+    simulated_field_size: 24
+    entries_submitted: 5
+    public_source: espn_bracket_challenge
+    field_behavior_profile: small_pool_public
+    opponent_mix:
+      high_confidence: 0.40
+      balanced: 0.35
+      selective_contrarian: 0.15
+      underdog_upside: 0.07
+      high_risk_high_return: 0.03
+  standard_mid:
+    name: Standard mid pool
+    scoring_profile: standard_124832
+    payout_profile: top3_mid
+    pool_bucket: mid
+    simulated_field_size: 96
+    entries_submitted: 5
+    public_source: espn_bracket_challenge
+    field_behavior_profile: mid_pool_public
+    opponent_mix:
+      high_confidence: 0.26
+      balanced: 0.32
+      selective_contrarian: 0.20
+      underdog_upside: 0.14
+      high_risk_high_return: 0.08
+  standard_large:
+    name: Standard large pool
+    scoring_profile: standard_124832
+    payout_profile: top3_large
+    pool_bucket: large
+    simulated_field_size: 768
+    entries_submitted: 5
+    public_source: espn_bracket_challenge
+    field_behavior_profile: large_pool_public
+    opponent_mix:
+      high_confidence: 0.15
+      balanced: 0.25
+      selective_contrarian: 0.24
+      underdog_upside: 0.20
+      high_risk_high_return: 0.16
+  flat_mid:
+    name: Flat-score mid pool
+    scoring_profile: flat_10
+    payout_profile: top3_mid
+    pool_bucket: mid
+    simulated_field_size: 96
+    entries_submitted: 5
+    public_source: espn_bracket_challenge
+    field_behavior_profile: mid_pool_public
+    opponent_mix:
+      high_confidence: 0.22
+      balanced: 0.34
+      selective_contrarian: 0.20
+      underdog_upside: 0.15
+      high_risk_high_return: 0.09
+  upset_bonus_large:
+    name: Upset-bonus large pool
+    scoring_profile: upset_bonus
+    payout_profile: top5_large
+    pool_bucket: large
+    simulated_field_size: 768
+    entries_submitted: 5
+    public_source: espn_bracket_challenge
+    field_behavior_profile: upset_bonus_public
+    opponent_mix:
+      high_confidence: 0.10
+      balanced: 0.20
+      selective_contrarian: 0.26
+      underdog_upside: 0.24
+      high_risk_high_return: 0.20

@@ -1,0 +1,166 @@
+sources:
+  - id: ncaa_hidden_feeds
+    priority: tier_1
+    domain: data.ncaa.com
+    access: hidden_json
+    cost: free
+    entities:
+      - schedules
+      - scores
+      - box_scores
+      - scoreboard_states
+    collection_method: direct_http
+    notes: Use as the backbone for official game state and schedule backfills.
+  - id: stats_ncaa_org
+    priority: tier_1
+    domain: stats.ncaa.org
+    access: web
+    cost: free
+    entities:
+      - rosters
+      - player_season_stats
+      - team_season_stats
+      - historical_results
+    collection_method: crawl_or_playwright
+    notes: Deep historical coverage. Rate-limit conservatively.
+  - id: hoopr
+    priority: tier_1
+    domain: hoopr.sportsdataverse.org
+    access: package_download
+    cost: free
+    entities:
+      - play_by_play
+      - box_scores
+      - espn_metadata
+    collection_method: package_or_export
+    notes: Best open-source historical ingest layer.
+  - id: sportsdataio
+    priority: tier_2
+    domain: sportsdata.io
+    access: api
+    cost: paid
+    entities:
+      - teams
+      - players
+      - injuries
+      - odds
+      - schedules
+      - projections
+    collection_method: api
+    notes: Best all-in-one paid upgrade for current structured data.
+  - id: sportradar_ncaamb
+    priority: tier_2
+    domain: developer.sportradar.com
+    access: api
+    cost: paid
+    entities:
+      - teams
+      - players
+      - schedules
+      - seasons
+      - game_summaries
+    collection_method: api
+    notes: Enterprise-grade option if budget is available.
+  - id: kenpom
+    priority: tier_2
+    domain: kenpom.com
+    access: subscription_web
+    cost: paid
+    entities:
+      - adjusted_team_ratings
+      - matchup_ratings
+      - schedule_strength
+    collection_method: manual_or_allowed_fetch
+    notes: High-value predictive layer. Respect subscription terms.
+  - id: bart_torvik
+    priority: tier_2
+    domain: barttorvik.com
+    access: web
+    cost: free
+    entities:
+      - team_ratings
+      - player_stats
+      - coaching_changes
+      - trend_splits
+    collection_method: allowed_crawl_or_package
+    notes: robots.txt disallows several rich endpoints and sets crawl-delay 10.
+  - id: evanmiya
+    priority: tier_2
+    domain: evanmiya.com
+    access: web
+    cost: mixed
+    entities:
+      - player_ratings
+      - lineup_value
+      - continuity_metrics
+    collection_method: manual_or_allowed_fetch
+    notes: Strong player-centric signal layer.
+  - id: official_athletics_sites
+    priority: tier_1
+    domain: athletics_domains
+    access: web_pdf
+    cost: free
+    entities:
+      - rosters
+      - bios
+      - staff_directories
+      - media_guides
+      - game_notes
+      - press_releases
+    collection_method: cloudflare_crawl_or_playwright
+    notes: Canonical source for current personnel and staff data.
+  - id: rotowire_ncaab
+    priority: tier_3
+    domain: rotowire.com
+    access: web
+    cost: mixed
+    entities:
+      - injuries
+      - expected_returns
+    collection_method: manual_or_structured_partner
+    notes: Prefer structured injury vendors when possible.
+  - id: verbal_commits
+    priority: tier_2
+    domain: verbalcommits.com
+    access: web
+    cost: free
+    entities:
+      - transfers
+      - commitments
+      - roster_changes
+    collection_method: targeted_fetch
+    notes: Verify against official rosters. Requests may be blocked.
+  - id: on3
+    priority: tier_2
+    domain: on3.com
+    access: web
+    cost: mixed
+    entities:
+      - recruiting
+      - transfer_portal
+      - nil
+    collection_method: crawl_or_manual
+    notes: Useful for NIL and portal proxies.
+  - id: the_odds_api
+    priority: tier_1
+    domain: api.the-odds-api.com
+    access: api
+    cost: mixed
+    entities:
+      - spreads
+      - moneylines
+      - totals
+      - historical_odds
+    collection_method: api
+    notes: Best simple market-prior feed.
+  - id: bracket_matrix
+    priority: tier_2
+    domain: bracketmatrix.com
+    access: web
+    cost: free
+    entities:
+      - bracketology_consensus
+      - projected_seeds
+    collection_method: crawl
+    notes: Best public Selection Sunday prior.
+

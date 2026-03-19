@@ -1,0 +1,105 @@
+grains:
+  - name: team_season
+    primary_key:
+      - season
+      - team_id
+    description: Slow-moving season aggregate for a team.
+    core_columns:
+      - conference_id
+      - coach_id
+      - schedule_strength
+      - adjusted_off_efficiency
+      - adjusted_def_efficiency
+      - tempo
+      - continuity_metrics
+      - recruiting_talent_index
+      - availability_risk_score
+  - name: team_game
+    primary_key:
+      - game_id
+      - team_id
+    description: One row per team per game.
+    core_columns:
+      - opponent_team_id
+      - venue_id
+      - is_neutral
+      - score
+      - possessions
+      - offensive_efficiency
+      - defensive_efficiency
+      - travel_miles
+      - rest_days
+  - name: player_season
+    primary_key:
+      - season
+      - player_id
+    description: Slow-moving season aggregate for a player.
+    core_columns:
+      - team_id
+      - class_year
+      - minutes_share
+      - usage_rate
+      - on_off_net_rating
+      - injury_risk_score
+      - recruiting_rank
+      - transfer_origin
+  - name: player_game
+    primary_key:
+      - game_id
+      - player_id
+    description: One row per player per game.
+    core_columns:
+      - team_id
+      - minutes
+      - points
+      - rebounds
+      - assists
+      - steals
+      - blocks
+      - fouls
+      - usage_rate
+  - name: coach_season
+    primary_key:
+      - season
+      - coach_id
+    description: Coaching and staff continuity snapshot.
+    core_columns:
+      - team_id
+      - career_wins
+      - tournament_record
+      - seed_relative_performance
+      - staff_tenure_years
+      - scheme_adaptability_score
+  - name: matchup_game
+    primary_key:
+      - game_id
+    description: Precomputed matchup differentials for both teams.
+    core_columns:
+      - favorite_team_id
+      - underdog_team_id
+      - style_clash_features
+      - market_priors
+      - travel_rest_deltas
+      - officiating_sensitivity
+  - name: selection_sunday_snapshot
+    primary_key:
+      - season
+      - team_id
+    description: Leak-safe snapshot at bracket release.
+    core_columns:
+      - seed
+      - region
+      - committee_metrics
+      - selection_sunday_feature_set
+  - name: pre_tipoff_availability_snapshot
+    primary_key:
+      - game_id
+      - team_id
+    description: Late-breaking information added before tipoff.
+    core_columns:
+      - confirmed_absences
+      - minute_limits
+      - market_close
+      - travel_status
+      - quote_sentiment_delta
+

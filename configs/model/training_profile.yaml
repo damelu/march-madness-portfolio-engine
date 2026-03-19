@@ -1,0 +1,157 @@
+profiles:
+  default_v10:
+    model_id: v10_default
+    seed: 20260318
+    backend: auto
+    device: auto
+    batch_size: 2048
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    max_epochs: 100
+    early_stopping_patience: 10
+    ensemble_size: 8
+    bootstrap_replicates: 8
+    calibration_method: isotonic
+    uncertainty_mode: deep_ensemble
+    train_seasons: [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021, 2022, 2023]
+    validation_seasons: [2024]
+    holdout_seasons: [2025]
+    feature_sets:
+      - ratings_base
+      - four_factors
+      - matchup_interactions
+      - context
+      - public_field
+  fast_debug:
+    model_id: v10_fast_debug
+    seed: 20260318
+    backend: numpy
+    device: cpu
+    batch_size: 512
+    learning_rate: 0.002
+    weight_decay: 0.0
+    max_epochs: 10
+    early_stopping_patience: 3
+    ensemble_size: 3
+    bootstrap_replicates: 2
+    calibration_method: platt
+    uncertainty_mode: bootstrap
+    train_seasons: [2021, 2022, 2023]
+    validation_seasons: [2024]
+    holdout_seasons: [2025]
+    feature_sets:
+      - ratings_base
+      - context
+  empirical_v10_5:
+    model_id: v10_5_empirical
+    seed: 20260319
+    backend: auto
+    device: auto
+    batch_size: 2048
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    max_epochs: 100
+    early_stopping_patience: 10
+    ensemble_size: 8
+    bootstrap_replicates: 8
+    calibration_method: isotonic
+    uncertainty_mode: deep_ensemble
+    train_seasons: [2019, 2021]
+    validation_seasons: [2022]
+    holdout_seasons: [2023]
+    feature_sets:
+      - ratings_base
+      - four_factors
+      - matchup_interactions
+      - context
+      - uncertainty
+  empirical_v10_5_no_context:
+    model_id: v10_5_empirical_no_context
+    seed: 20260319
+    backend: auto
+    device: auto
+    batch_size: 2048
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    max_epochs: 100
+    early_stopping_patience: 10
+    ensemble_size: 8
+    bootstrap_replicates: 8
+    calibration_method: isotonic
+    uncertainty_mode: deep_ensemble
+    train_seasons: [2019, 2021]
+    validation_seasons: [2022]
+    holdout_seasons: [2023]
+    feature_sets:
+      - ratings_base
+      - four_factors
+      - matchup_interactions
+      - uncertainty
+  release_v10_6:
+    model_id: v10_6_release
+    seed: 20260319
+    backend: auto
+    device: auto
+    batch_size: 2048
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    max_epochs: 100
+    early_stopping_patience: 10
+    ensemble_size: 8
+    bootstrap_replicates: 8
+    calibration_method: isotonic
+    uncertainty_mode: deep_ensemble
+    train_seasons: [2019, 2021]
+    validation_seasons: [2022]
+    holdout_seasons: [2023]
+    feature_sets:
+      - ratings_base
+      - four_factors
+      - matchup_interactions
+      - context
+      - uncertainty
+  release_v10_6_pruned:
+    model_id: v10_6_release_pruned
+    seed: 20260319
+    backend: auto
+    device: auto
+    batch_size: 2048
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    max_epochs: 100
+    early_stopping_patience: 10
+    ensemble_size: 8
+    bootstrap_replicates: 8
+    calibration_method: isotonic
+    uncertainty_mode: deep_ensemble
+    train_seasons: [2019, 2021]
+    validation_seasons: [2022]
+    holdout_seasons: [2023]
+    feature_sets:
+      - ratings_base
+      - matchup_interactions
+      - context
+      - uncertainty
+  release_v10_6_1:
+    model_id: v10_6_1_release
+    seed: 20260319
+    backend: auto
+    device: auto
+    batch_size: 2048
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    max_epochs: 100
+    early_stopping_patience: 10
+    ensemble_size: 8
+    bootstrap_replicates: 8
+    calibration_method: isotonic
+    uncertainty_mode: deep_ensemble
+    train_seasons: [2019, 2021, 2022, 2023]
+    validation_seasons: [2024]
+    holdout_seasons: [2025]
+    feature_sets:
+      - ratings_base
+      - four_factors
+      - matchup_interactions
+      - context
+      - uncertainty

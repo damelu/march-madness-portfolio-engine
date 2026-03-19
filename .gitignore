@@ -1,0 +1,31 @@
+.DS_Store
+.env
+.env.local
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+node_modules/
+logs/
+tmp/
+outputs/
+
+# Large local data captures
+data/landing/
+data/raw/
+data/staged/
+data/features/
+data/models/
+
+# Keep the committed release snapshot shareable
+!data/features/
+data/features/*
+!data/features/selection_sunday/
+data/features/selection_sunday/*
+!data/features/selection_sunday/snapshot.json

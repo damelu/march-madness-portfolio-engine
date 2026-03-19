@@ -1,0 +1,17 @@
+profiles:
+  standard_124832:
+    name: Standard 1-2-4-8-16-32
+    round_weights: [1, 2, 4, 8, 16, 32]
+    upset_bonus_per_seed: 0.0
+    tiebreak_mode: shared_win
+  flat_10:
+    name: Flat 10-point rounds
+    round_weights: [10, 10, 10, 10, 10, 10]
+    upset_bonus_per_seed: 0.0
+    tiebreak_mode: shared_win
+  upset_bonus:
+    name: Standard with upset bonus
+    round_weights: [1, 2, 4, 8, 16, 32]
+    upset_bonus_per_seed: 0.5
+    tiebreak_mode: shared_win
+

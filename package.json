@@ -1,0 +1,14 @@
+{
+  "name": "march-madness-2026",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Local March Madness bracket portfolio engine and research tooling",
+  "license": "Apache-2.0",
+  "scripts": {
+    "verify:tooling": "npx wrangler --version && npx @playwright/mcp --help >/dev/null"
+  },
+  "devDependencies": {
+    "@playwright/mcp": "^0.0.68",
+    "wrangler": "^4.75.0"
+  }
+}

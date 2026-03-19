@@ -1,0 +1,31 @@
+{
+  "url": "https://example.com/",
+  "limit": 100,
+  "depth": 3,
+  "formats": [
+    "markdown"
+  ],
+  "render": true,
+  "source": "all",
+  "gotoOptions": {
+    "waitUntil": "networkidle2",
+    "timeout": 60000
+  },
+  "waitForSelector": {
+    "selector": "main",
+    "timeout": 30000,
+    "visible": true
+  },
+  "options": {
+    "includePatterns": [
+      "https://example.com/news/**",
+      "https://example.com/sports/mens-basketball/**"
+    ],
+    "excludePatterns": [
+      "https://example.com/video/**",
+      "https://example.com/shop/**"
+    ],
+    "includeSubdomains": false,
+    "includeExternalLinks": false
+  }
+}

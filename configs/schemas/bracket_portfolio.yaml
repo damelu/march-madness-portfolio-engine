@@ -1,0 +1,45 @@
+objects:
+  contest_profile:
+    fields:
+      - id
+      - name
+      - scoring_profile
+      - pool_bucket
+      - simulated_field_size
+      - entries_submitted
+      - opponent_mix
+  simulation_profile:
+    fields:
+      - seed
+      - num_tournament_simulations
+      - num_candidate_brackets
+      - portfolio_size
+      - primary_contests
+      - sensitivity_contests
+      - overlap_penalty_weight
+      - champion_penalty_weight
+  bracket_candidate:
+    fields:
+      - bracket_id
+      - archetype
+      - risk_label
+      - champion_team_id
+      - finalist_team_ids
+      - pick_indices
+      - chalkiness_proxy
+      - duplication_proxy
+      - weighted_first_place_equity
+      - weighted_average_finish
+      - contest_metrics
+  portfolio_result:
+    fields:
+      - run_id
+      - data_source
+      - candidate_count
+      - finalists
+      - portfolio_capture_rate
+      - weighted_candidate_baseline
+      - weighted_portfolio_objective
+      - diversification_diagnostics
+      - scenario_summary
+

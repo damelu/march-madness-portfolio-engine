@@ -1,0 +1,23 @@
+simulation:
+  seed: 20260317
+  num_tournament_simulations: 3000
+  num_candidate_brackets: 240
+  portfolio_size: 5
+  max_per_archetype: 2
+  min_distinct_archetypes: 3
+  overlap_penalty_weight: 0.18
+  champion_penalty_weight: 0.05
+  archetype_mix:
+    high_confidence: 0.20
+    balanced: 0.20
+    selective_contrarian: 0.20
+    underdog_upside: 0.20
+    high_risk_high_return: 0.20
+  primary_contests:
+    standard_small: 0.333333
+    standard_mid: 0.333333
+    standard_large: 0.333334
+  sensitivity_contests:
+    - flat_mid
+    - upset_bonus_large
+

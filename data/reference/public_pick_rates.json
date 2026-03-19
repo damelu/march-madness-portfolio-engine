@@ -1,0 +1,28 @@
+{
+  "source": "yahoo_bracket_mayhem_cbs_espn_march_2026",
+  "description": "Public bracket pick percentages — what % of real bracket entries pick each team as champion or to advance. Used for contrarian value calculation.",
+  "champion_picks": {
+    "duke": 29.3, "arizona": 21.0, "michigan": 14.3, "florida": 6.3,
+    "houston": 5.5, "uconn": 3.5, "purdue": 3.2, "iowa-state": 1.9,
+    "gonzaga": 1.8, "kansas": 1.5, "illinois": 1.2, "michigan-state": 1.0,
+    "alabama": 0.9, "arkansas": 0.7, "virginia": 0.5, "st-johns": 0.5,
+    "vanderbilt": 0.4, "nebraska": 0.3, "tennessee": 0.3, "louisville": 0.3,
+    "texas-tech": 0.2, "kentucky": 0.2, "wisconsin": 0.2, "byu": 0.1,
+    "ucla": 0.1, "saint-marys": 0.05, "north-carolina": 0.05
+  },
+  "first_round_public_picks": {
+    "_notes": "Percentage of public brackets picking the favored team. From CBS bracket challenge.",
+    "north-carolina_vs_vcu": {"favored": "north-carolina", "pick_pct": 69},
+    "louisville_vs_south-florida": {"favored": "louisville", "pick_pct": 66},
+    "georgia_vs_saint-louis": {"favored": "georgia", "pick_pct": 58},
+    "kentucky_vs_santa-clara": {"favored": "kentucky", "pick_pct": 69},
+    "saint-marys_vs_texas-am": {"favored": "saint-marys", "pick_pct": 59},
+    "ucla_vs_ucf": {"favored": "ucla", "pick_pct": 68}
+  },
+  "contrarian_value": {
+    "_formula": "bpi_championship_pct / public_champion_pick_pct — values > 1.0 are undervalued by public",
+    "duke": 0.83, "arizona": 0.67, "michigan": 1.07, "florida": 1.22,
+    "houston": 1.71, "iowa-state": 3.16, "uconn": 0.69, "purdue": 1.34,
+    "gonzaga": 2.06, "illinois": 3.50, "kansas": 0.33
+  }
+}

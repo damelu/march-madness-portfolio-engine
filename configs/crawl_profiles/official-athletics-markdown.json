@@ -1,0 +1,34 @@
+{
+  "url": "https://example.com/",
+  "limit": 150,
+  "depth": 4,
+  "formats": [
+    "markdown",
+    "html"
+  ],
+  "render": false,
+  "source": "all",
+  "maxAge": 86400,
+  "options": {
+    "includePatterns": [
+      "https://example.com/sports/**",
+      "https://example.com/news/**",
+      "https://example.com/staff/**",
+      "https://example.com/roster/**"
+    ],
+    "excludePatterns": [
+      "https://example.com/tickets/**",
+      "https://example.com/shop/**",
+      "https://example.com/calendar/**"
+    ],
+    "includeSubdomains": false,
+    "includeExternalLinks": false
+  },
+  "rejectResourceTypes": [
+    "image",
+    "media",
+    "font",
+    "stylesheet"
+  ]
+}
+
